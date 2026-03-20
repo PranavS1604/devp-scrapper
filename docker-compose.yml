@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  hackathon-bot:
+    build: .
+    container_name: devp_bot
+    restart: unless-stopped # Automatically restarts if the server reboots or the app crashes
+    env_file:
+      - .env # Pulls in your GEMINI, SUPABASE, and DISCORD keys automatically

@@ -3,7 +3,7 @@ from discord import app_commands
 from google import genai
 from supabase import create_client
 import os, requests
-from keep_alive import keep_alive
+import subprocess
 from dotenv import load_dotenv
 
 # 1. Load the secret keys from your .env file
@@ -21,15 +21,14 @@ class MyBot(discord.Client):
     async def setup_hook(self):
         await self.tree.sync()
 
-bot = MyBot()
+bot = MyBot() 
 
-@bot.tree.command(name="sync", description="Trigger the scraper to find new projects")
+@bot.tree.command(name="sync", description="Trigger the local scraper")
 async def sync(interaction: discord.Interaction):
-    # This calls the GitHub Action "Button"
-    url = f"https://api.github.com/repos/{os.environ['GH_REPO']}/dispatches"
-    headers = {"Authorization": f"token {os.environ['GH_PAT']}"}
-    requests.post(url, headers=headers, json={"event_type": "manual_sync"})
-    await interaction.response.send_message("⚡ Scraper started! Checking Devpost for new innovation...")
+    await interaction.response.send_message("⚡ Scraper started on the server! Checking Devpost for new innovation...")
+    
+    # This runs sync.py in the background directly on your server!
+    subprocess.Popen(["python", "sync.py"])
 
 @bot.tree.command(name="brainstorm", description="Get 20 winning ideas based on history")
 async def brainstorm(interaction: discord.Interaction, hackathon_desc: str):
@@ -79,6 +78,6 @@ async def brainstorm(interaction: discord.Interaction, hackathon_desc: str):
     else:
         await interaction.followup.send(reply_text)
 
-keep_alive() # This starts the web server
+
 # Run the bot
 bot.run(os.environ["DISCORD_TOKEN"])

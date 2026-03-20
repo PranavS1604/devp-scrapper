@@ -3,4 +3,3 @@ google-genai
 supabase
 python-dotenv
 requests
-flask
