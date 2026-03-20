@@ -3,6 +3,7 @@ from discord import app_commands
 from google import genai
 from supabase import create_client
 import os, requests
+from keep_alive import keep_alive
 from dotenv import load_dotenv
 
 # 1. Load the secret keys from your .env file
@@ -78,5 +79,6 @@ async def brainstorm(interaction: discord.Interaction, hackathon_desc: str):
     else:
         await interaction.followup.send(reply_text)
 
+keep_alive() # This starts the web server
 # Run the bot
 bot.run(os.environ["DISCORD_TOKEN"])
